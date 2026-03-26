@@ -30,7 +30,6 @@ const redirect = async (req, res) => {
             shortURL: body,
         });
 
-        console.log("log :" )
 
         if (target) {
             console.log("correct")
