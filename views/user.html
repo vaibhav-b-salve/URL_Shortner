@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>User Dashboard</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #f4f6f9;
+    padding: 20px;
+}
+.container {
+    max-width: 800px;
+    margin: auto;
+}
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+input, button {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+}
+button {
+    background: #28a745;
+    color: white;
+    border: none;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+th {
+    background: #007bff;
+    color: white;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- Shortener -->
+    <div class="card">
+        <h2>Shorten URL</h2>
+        <input type="text" placeholder="Enter URL..." id="originalURL">
+        <button onclick="getShortURL()">Shorten</button>
+        <div id="short-url"></div>
+    </div>
+
+    <!-- History -->
+    <div class="card">
+        <h2>Your History</h2>
+
+        <table>
+            <tr>
+                <th>Sr.no</th>
+                <th>Original URL</th>
+                <th>Short URL</th>
+            </tr>
+
+            <!-- Dummy Data -->
+            <tr>
+                <td>1</td>
+                <td>https://google.com</td>
+                <td>short.ly/abc123</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>https://youtube.com</td>
+                <td>short.ly/xyz789</td>
+            </tr>
+        </table>
+    </div>
+
+</div>
+
+<script>
+function getShortURL()
+{
+    const url = document.getElementById("originalURL").value;
+
+    fetch("/url/shortner",{
+        method:"POST",
+        headers:{ 'content-type':'application/json' },
+        body:JSON.stringify({ url:url })
+    })
+    .then(res=>res.json())
+    .then(data=>{
+        document.getElementById("short-url").innerHTML =
+        `Short URL: /url/goto/${data.short}`;
+    })
+}
+</script>
+
+</body>
+</html>

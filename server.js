@@ -9,9 +9,25 @@ app.use(express.json());
 app.use("/url",urlRoute);
 
 app.get("/",(req,res)=>{
-    res.sendFile(path.join(__dirname,"./views/index.html"));
+    res.sendFile(path.join(__dirname,"./views/home.html"));
 })
 
+app.get("/:id",(req,res)=>{
+    const page = req.params.id;
+    console.log("page :",page);
+    if(page=="login.html")
+    {
+        res.sendFile(path.join(__dirname,"./views/login.html"));
+    }else if(page=="register.html")
+    {
+        res.sendFile(path.join(__dirname,"./views/register.html"));
+    }else if(page=="guest.html")
+    {
+        res.sendFile(path.join(__dirname,"./views/guest.html"));
+    }else{
+        res.sendFile(path.join(__dirname,"./views/home.html"));
+    }
+})
 
 dbConnection();
 

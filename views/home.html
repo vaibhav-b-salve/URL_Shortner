@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Home</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right, #007bff, #00c6ff);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.container {
+    text-align: center;
+}
+
+h1 {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+p {
+    margin-bottom: 30px;
+    font-size: 18px;
+}
+
+.buttons a {
+    text-decoration: none;
+}
+
+button {
+    padding: 12px 25px;
+    margin: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* Buttons */
+.login {
+    background: white;
+    color: #007bff;
+}
+
+.register {
+    background: #28a745;
+    color: white;
+}
+
+button:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>URL Shortener</h1>
+    <p>Shorten your long URLs quickly and easily </p>
+
+    <div class="buttons">
+        <a href="login.html">
+            <button class="login">Login</button>
+        </a>
+
+        <a href="register.html">
+            <button class="register">Register</button>
+        </a>
+    </div>
+</div>
+
+</body>
+</html>

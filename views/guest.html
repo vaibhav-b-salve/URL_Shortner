@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>URL Shortener</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #f4f6f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.container {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    width: 350px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+h2 {
+    text-align: center;
+}
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+button {
+    width: 100%;
+    padding: 10px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+button:hover {
+    background: #0056b3;
+}
+#short-url {
+    display: block;
+    margin-top: 10px;
+    word-break: break-all;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>URL Shortener</h2>
+
+    <input type="text" placeholder="Enter URL..." id="originalURL">
+    <button onclick="getShortURL()">Get Short URL</button>
+
+    <span id="short-url"></span>
+</div>
+
+<script>
+function getShortURL()
+{
+    const url = document.getElementById("originalURL").value;
+
+    fetch("/url/shortner",{
+        method:"POST",
+        headers:{ 'content-type':'application/json' },
+        body:JSON.stringify({ url:url })
+    })
+    .then(res=>res.json())
+    .then(data=>{
+        if(!data.error){
+            const container = document.getElementById("short-url");
+            container.innerHTML =
+            `<a href="/url/goto/${data.short}" target="_blank">
+                http://localhost:3400/url/goto/${data.short}
+            </a>`;
+        }
+    })
+    .catch(err=>{
+        alert("Error :"+err);
+    })
+}
+</script>
+
+</body>
+</html>
