@@ -1,4 +1,5 @@
 const express = require('express');
+require("dotenv").config(); 
 const path = require('path');
 const dbConnection = require('./infra/db');
 const urlRoute = require('./routes/url.route');
@@ -8,7 +9,6 @@ app.use(express.json());
 app.use("/url",urlRoute);
 
 app.get("/",(req,res)=>{
-    // res.send("Welcome to URL shortner");
     res.sendFile(path.join(__dirname,"./views/index.html"));
 })
 
