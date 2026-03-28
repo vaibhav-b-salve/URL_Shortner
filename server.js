@@ -3,14 +3,18 @@ require("dotenv").config();
 const path = require('path');
 const dbConnection = require('./infra/db');
 const urlRoute = require('./routes/url.route');
+const userRoute = require('./routes/user.route');
 const PORT = process.env.PORT || 3400;
 const app = express();
 app.use(express.json());
 app.use("/url",urlRoute);
+app.use("/user",userRoute);
 
 app.get("/",(req,res)=>{
     res.sendFile(path.join(__dirname,"./views/home.html"));
 })
+
+
 
 app.get("/:id",(req,res)=>{
     const page = req.params.id;

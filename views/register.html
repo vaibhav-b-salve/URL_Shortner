@@ -57,18 +57,62 @@
 
 <div class="container">
     <h2>Register</h2>
-    <form>
-        <input type="text" placeholder="Name" required>
-        <input type="email" placeholder="Email" required>
-        <input type="password" placeholder="Password" required>
-        <input type="password" placeholder="Confirm Password" required>
-        <button type="submit">Register</button>
-    </form>
+    <form id="registerForm">
+    <input type="text" id="name" placeholder="Name" required>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+    <button type="submit">Register</button>
+</form>
 
     <div class="link">
         <a href="login.html">Already have an account?</a>
     </div>
 </div>
 
+
+<script>
+document.getElementById("registerForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+
+    if(password !== confirmPassword){
+        alert("Passwords do not match!");
+        return;
+    }
+
+    
+    fetch("/user/register", {  
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            name: name,
+            email: email,
+            password: password
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+       if(data.success)
+       {
+        alert("Registration done successfully");
+        
+       }else{
+        alert(data.message);
+       }
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Something went wrong!");
+    });
+});
+</script>
 </body>
 </html>
