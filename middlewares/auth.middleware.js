@@ -33,7 +33,7 @@ function validateUser(req, res, next) {
 
 function validateAdmin(req, res, next) {
     const token = req.cookies.token;
-    if (!token) return res.redirect("/register");
+    if (!token) return res.redirect("/login.html");
 
     jwt.verify(token, sec, (err, user) => {
         if (err) {
