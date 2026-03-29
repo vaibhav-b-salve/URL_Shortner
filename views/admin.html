@@ -33,49 +33,105 @@ th, td {
     text-align: center;
 }
 th {
+    background: #d435dc;
+    color: white;
+}
+
+button {
     background: #dc3545;
     color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    float: right;
+    margin-bottom: 10px;
+    font-weight: bold;
+    transition: 0.3s ease;
+}
+
+button:hover {
+    background: #c82333;
+    transform: scale(1.05);
+}
+
+button:active {
+    transform: scale(0.95);
 }
 </style>
 </head>
 
 <body>
+   
 
 <div class="container">
     <div class="card">
+        <button onClick="logout()">Logout</button>
         <h2>Admin Dashboard</h2>
 
-        <table>
-            <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Total URLs</th>
-                <th>Details</th>
-            </tr>
-
-            <!-- Dummy Data -->
-            <tr>
-                <td>Vaibhav</td>
-                <td>vaibhav@gmail.com</td>
-                <td>2</td>
-                <td>
-                    google.com → abc123 <br>
-                    youtube.com → xyz789
-                </td>
-            </tr>
-
-            <tr>
-                <td>Rahul</td>
-                <td>rahul@gmail.com</td>
-                <td>1</td>
-                <td>
-                    facebook.com → pqr456
-                </td>
-            </tr>
-
+        <div class="emty">Empty List !</div>
+        <table id="cont">
+           
         </table>
     </div>
 </div>
 
+
+<script>
+   function getAllUsers() {
+    fetch("/user/getUser") // your admin API
+    .then(res => res.json())
+    .then(data => {
+        console.log("Users:", data);
+
+        const table = document.getElementById("cont");
+        const emptyMsg = document.getElementsByClassName("emty")[0];
+
+        // Reset table
+        table.innerHTML = `
+            <tr>
+                <th>Sr.no</th>
+                <th>Name</th>
+                <th>Email</th>
+            </tr>
+        `;
+
+        if (data.sucess) {
+
+            if (data.users.length === 0) {
+                emptyMsg.style.display = "block";
+                table.style.display = "none";
+            } else {
+                emptyMsg.style.display = "none";
+                table.style.display = "table";
+
+                data.users.forEach((user, index) => {
+                    const row = document.createElement("tr");
+
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${user.Name}</td>
+                        <td>${user.Email}</td>
+                    `;
+
+                    table.appendChild(row);
+                });
+            }
+
+        } else {
+            alert("Failed to fetch users");
+        }
+    });
+}
+
+getAllUsers();
+
+async function logout()
+{
+    const res = await fetch("/user/logout");
+    window.location.href = "/login.html"
+}
+
+</script>
 </body>
 </html>

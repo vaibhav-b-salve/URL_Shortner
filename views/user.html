@@ -8,41 +8,99 @@
 body {
     font-family: Arial;
     background: #f4f6f9;
+    margin: 0;
     padding: 20px;
 }
+
+/* Layout */
 .container {
-    max-width: 800px;
+    max-width: 900px;
     margin: auto;
 }
+
 .card {
     background: white;
     padding: 20px;
-    border-radius: 10px;
+    border-radius: 12px;
     margin-bottom: 20px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
-input, button {
+
+/* Header */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Inputs */
+input {
     width: 100%;
     padding: 10px;
     margin: 10px 0;
+    border-radius: 6px;
+    border: 1px solid #ccc;
 }
-button {
+
+/* Buttons */
+.btn {
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s ease;
+}
+
+/* Primary button (shorten) */
+.btn-primary {
     background: #28a745;
     color: white;
-    border: none;
+    width:100%
+
 }
+
+.btn-primary:hover {
+    background: #218838;
+}
+
+/* Danger button (logout) */
+.btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #c82333;
+}
+
+/* Table */
 table {
     width: 100%;
     border-collapse: collapse;
+    margin-top: 10px;
 }
+
 th, td {
-    padding: 10px;
+    padding: 12px;
     border: 1px solid #ddd;
     text-align: center;
 }
+
 th {
     background: #007bff;
     color: white;
+}
+
+/* Empty state */
+.empty {
+    display: none;
+    text-align: center;
+    padding: 40px;
+    font-size: 24px;
+    color: #28a745;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
 }
 </style>
 </head>
@@ -53,35 +111,21 @@ th {
 
     <!-- Shortener -->
     <div class="card">
-        <h2>Shorten URL</h2>
+        <div class="card-header">
+            <h2>Shorten URL</h2>
+            <button class="btn btn-danger" onclick="logout()">Logout</button>
+        </div>
+
         <input type="text" placeholder="Enter URL..." id="originalURL">
-        <button onclick="getShortURL()">Shorten</button>
+        <button class="btn btn-primary" onclick="getShortURL()">Shorten</button>
         <div id="short-url"></div>
     </div>
 
     <!-- History -->
     <div class="card">
         <h2>Your History</h2>
-
-        <table>
-            <tr>
-                <th>Sr.no</th>
-                <th>Original URL</th>
-                <th>Short URL</th>
-            </tr>
-
-            <!-- Dummy Data -->
-            <tr>
-                <td>1</td>
-                <td>https://google.com</td>
-                <td>short.ly/abc123</td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>https://youtube.com</td>
-                <td>short.ly/xyz789</td>
-            </tr>
-        </table>
+        <div class="empty">Empty List!</div>
+        <table id="cont"></table>
     </div>
 
 </div>
@@ -91,7 +135,7 @@ function getShortURL()
 {
     const url = document.getElementById("originalURL").value;
 
-    fetch("/url/shortner",{
+    fetch("/url/shortner/user",{
         method:"POST",
         headers:{ 'content-type':'application/json' },
         body:JSON.stringify({ url:url })
@@ -99,8 +143,64 @@ function getShortURL()
     .then(res=>res.json())
     .then(data=>{
         document.getElementById("short-url").innerHTML =
-        `Short URL: /url/goto/${data.short}`;
+        `Short URL: <a href="/url/goto/${data.short}" target="_blank">${data.short}</a>`;
     })
+}
+
+function getALL() {
+    fetch("/url/getUrls")
+    .then(res => res.json())
+    .then(data => {
+
+        const table = document.getElementById("cont");
+        const emptyMsg = document.querySelector(".empty");
+
+        table.innerHTML = `
+            <tr>
+                <th>Sr.no</th>
+                <th>Original URL</th>
+                <th>Short URL</th>
+            </tr>
+        `;
+
+        if (data.sucess) {
+
+            if (data.users.length === 0) {
+                emptyMsg.style.display = "block";
+                table.style.display = "none";
+            } else {
+                emptyMsg.style.display = "none";
+                table.style.display = "table";
+
+                data.users.forEach((user, index) => {
+                    const row = document.createElement("tr");
+
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${user.originalURL}</td>
+                        <td>
+                            <a href="/url/goto/${user.shortURL}" target="_blank">
+                                ${user.shortURL}
+                            </a>
+                        </td>
+                    `;
+
+                    table.appendChild(row);
+                });
+            }
+
+        } else {
+            alert("Failed to fetch data");
+        }
+    })
+}
+
+getALL();
+
+async function logout()
+{
+    const res = await fetch("/user/logout");
+    window.location.href = "/login.html"
 }
 </script>
 

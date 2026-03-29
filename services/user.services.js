@@ -55,9 +55,27 @@ const finder = async(data) =>{
     return response;
 }
 
+const findUser = async() =>{
+    try{
+        const target = await user.find();
+        const response = {
+            users:target,
+            sucess:true
+        }
+        return response;
+    }catch(err)
+    {
+        console.log("22 :",err);
+        const response = {
+            sucess:false
+        }
+        return response;
+    }
+}
 
 module.exports = {
     createUser,
-    finder
+    finder,
+    findUser
 }
 

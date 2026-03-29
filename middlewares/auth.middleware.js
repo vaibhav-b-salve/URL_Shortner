@@ -8,7 +8,7 @@ function validateUser(req, res, next) {
         if (err) {
             res.clearCookie("token", {
                 httpOnly: true,
-                secure: true,
+                secure: false,
                 sameSite: "strict"
             });
 
@@ -19,7 +19,7 @@ function validateUser(req, res, next) {
         {
           res.clearCookie("token", {
                 httpOnly: true,
-                secure: true,
+                secure: false,
                 sameSite: "strict"
             });
             return res.sendStatus(403);
@@ -39,7 +39,7 @@ function validateAdmin(req, res, next) {
         if (err) {
             res.clearCookie("token", {
                 httpOnly: true,
-                secure: true,
+                secure: false,
                 sameSite: "strict"
             });
 
@@ -50,7 +50,7 @@ function validateAdmin(req, res, next) {
         {
           res.clearCookie("token", {
                 httpOnly: true,
-                secure: true,
+                secure: false,
                 sameSite: "strict"
             });
             return res.sendStatus(403);
@@ -66,6 +66,8 @@ function validateAdmin(req, res, next) {
         }
     });
 }
+
+
 
 module.exports ={
   validateUser,

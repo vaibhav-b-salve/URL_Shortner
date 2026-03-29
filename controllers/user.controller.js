@@ -80,7 +80,53 @@ const login = async(req,res) =>{
     }
 }
 
+const getUser = async(req,res) =>{
+    try{
+        const target = await user.findUser();
+        if(target.sucess)
+        {
+            res.send(target);
+        }else{
+            console.log("11 :",target)
+            res.send({
+            error:"Failed to fetch url!",
+            sucess:false
+        })
+        }
+    }catch(err)
+    {
+         console.log("12 :",err)
+        res.send({
+            error:"Failed to fetch url!",
+            sucess:false
+        })
+    }
+}
+
+const logout = async (req, res) => {
+    try {
+        res.clearCookie("token", {
+            httpOnly: true,
+            secure: false,
+            sameSite: "lax",
+            path: "/"
+        });
+
+        return res.status(200).json({
+            success: true,
+            message: "Logged out successfully"
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Logout failed"
+        });
+    }
+};
 module.exports = {
     register,
-    login
+    login,
+    getUser,
+    logout
 }
