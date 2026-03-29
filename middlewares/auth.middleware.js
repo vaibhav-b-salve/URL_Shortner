@@ -1,19 +1,73 @@
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
 
-const auth = (req, res, next) => {
-  const authHeader = req.headers.authorization;
+const sec = process.env.secret_key;
+function validateUser(req, res, next) {
+    const token = req.cookies.token;
+    if (!token) return res.redirect("/home.html");
+    jwt.verify(token, sec, (err, user) => {
+        if (err) {
+            res.clearCookie("token", {
+                httpOnly: true,
+                secure: true,
+                sameSite: "strict"
+            });
 
-  if (!authHeader) {
-    return res.json({ error: "No token" });
-  }
+            return res.sendStatus(403);
+        };
+        req.user = user; 
+        if(user.email == process.env.admin_email)
+        {
+          res.clearCookie("token", {
+                httpOnly: true,
+                secure: true,
+                sameSite: "strict"
+            });
+            return res.sendStatus(403);
+        }
+        console.log("data from token:", user);
+        console.log("user.email :", user.email);
+        console.log("password :",user.password);
+        next();
+    });
+}
 
-  const token = authHeader.split(" ")[1];
+function validateAdmin(req, res, next) {
+    const token = req.cookies.token;
+    if (!token) return res.redirect("/register");
 
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
-    next();
-  } catch (err) {
-    return res.json({ error: "Invalid token" });
-  }
-};
+    jwt.verify(token, sec, (err, user) => {
+        if (err) {
+            res.clearCookie("token", {
+                httpOnly: true,
+                secure: true,
+                sameSite: "strict"
+            });
+
+            return res.sendStatus(403);
+        };
+        req.user = user;
+         if(user.email != process.env.admin_email)
+        {
+          res.clearCookie("token", {
+                httpOnly: true,
+                secure: true,
+                sameSite: "strict"
+            });
+            return res.sendStatus(403);
+        }
+        console.log("data from token:", user);
+        console.log("user.email :", user.email);
+        if(user.email==process.env.admin_email)
+        {
+            next();
+        }else{
+           
+            res.status(403).redirect("/login.html");
+        }
+    });
+}
+
+module.exports ={
+  validateUser,
+  validateAdmin
+}
